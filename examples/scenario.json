@@ -1,0 +1,10 @@
+{
+  "principal": "lab-reader",
+  "tool": "describe_lag",
+  "arguments": {
+    "group_id": "workshop-projection"
+  },
+  "allowed_topics": [
+    "workshop.attendance.v1"
+  ]
+}
