@@ -1,52 +1,28 @@
-# Kafka MCP Operations Lab
+# Kafka MCP Server
 
-**Bounded operational context for AI tools**
+A read-only MCP interface for Kafka metadata and consumer-lag investigation with scoped tool access.
 
-> Status: foundation only / implementation not started. Independent educational project by Abdelrahman Ahmed. This repository is not a reconstruction of employer systems, a production deployment or proof of completed work.
+**Status: In development** · Personal project by Abdelrahman Ahmed
 
-## The engineering challenge
+## Overview
 
-Expose synthetic Kafka metadata and consumer-lag summaries through an MCP server. Begin with read-only tools and a deterministic client. Add model integration only after validating permissions, bounded outputs and failure handling.
+An MCP server designed to give operational tools and AI clients bounded access to Kafka metadata. Its planned baseline provides topic discovery and consumer-lag context through authorization-aware adapters, structured responses and audit identifiers.
 
-This is a capstone for an experienced engineer. The goal is to defend tradeoffs, investigate failure and produce reproducible evidence, not just get a happy-path demo running.
+## Current state
 
-**Technical focus:** MCP · Kafka · Python · Tool contracts · AI-assisted investigation.
+The repository currently contains the system design, delivery requirements, a synthetic input fixture and initial Python interfaces. Runtime behavior, service integrations and deployment are planned. Interface methods raise `NotImplementedError`; there is no running application or published runtime benchmark yet.
 
-## What exists in this first commit
+## Planned capabilities
 
-- A project-specific architecture brief and decision questions.
-- Five implementation milestones with explicit review gates.
-- Failure experiments and acceptance criteria.
-- Typed Python interface scaffolds. Methods deliberately raise `NotImplementedError`.
-- One synthetic scenario fixture; it is an input, not a successful output or benchmark.
-- Evidence and journal templates, an issue template, and syntax/JSON foundation checks.
+- Read-only topic discovery and consumer-lag tools.
+- Principal-scoped authorization and metadata filtering.
+- Bounded, paginated tool responses with structured errors.
+- Timeout handling, audit identifiers and deterministic client verification.
+- Optional AI client integration evaluated against known operational questions.
 
-## What you will build
+Detailed scope is tracked in the [delivery roadmap](docs/roadmap.md) and [requirements](docs/requirements.md).
 
-1. Define tool input/output contracts, an allowlisted topic catalog and a threat model. Use synthetic descriptions that can contain hostile instructions.
-2. Implement a deterministic Kafka adapter and authorization boundary; keep read-only metadata access as the baseline.
-3. Implement the MCP server using a deliberately selected, pinned SDK/protocol version. Add pagination, timeouts, structured errors and audit identifiers.
-4. Test allowed and denied principals, tool discovery, invalid inputs, huge metadata responses and backend outages with a deterministic client.
-5. Optionally connect a model and evaluate tool selection against a fixed question set. Keep untrusted metadata separate from execution authority.
-
-## Start here
-
-1. Read [the architecture brief](docs/architecture.md) and record the first decision in [ADR 0001](docs/adr/0001-system-boundaries.md).
-2. Inspect [the synthetic scenario](examples/scenario.json) and [the interface boundary](src/kafka_mcp_operations_lab/interfaces.py).
-3. Run the foundation checks from the repository root:
-
-   ```sh
-   python3 tools/check_foundation.py
-   ```
-
-   Python 3.9+ is sufficient for these standard-library checks. They parse Python and JSON; they do **not** validate runtime behavior, deployment safety, protocol compliance or completion.
-4. Create a feature branch, implement milestone 1 and add behavior tests before adapters.
-5. Follow [the milestone backlog](docs/milestones.md). Select and pin implementation dependencies when you introduce them; none are installed by this scaffold.
-6. Complete [the failure lab](docs/failure-lab.md), gather [evidence](docs/evidence/README.md) and review [acceptance criteria](docs/acceptance.md).
-
-There is deliberately no `deploy`, `apply`, paid API call, installed cloud SDK or working runtime in this initial commit.
-
-## Architecture at a glance
+## Architecture
 
 ```text
 Deterministic client / optional model -> MCP server -> Kafka adapter
@@ -54,70 +30,68 @@ Deterministic client / optional model -> MCP server -> Kafka adapter
                                       policy / audit / output bounds
 ```
 
-This is a proposed lab architecture. [The design brief](docs/architecture.md) identifies decisions still to make.
+This is the proposed component design. See [architecture](docs/architecture.md) for boundaries and [architecture decisions](docs/adr/0001-system-boundaries.md) for the choices still to resolve.
 
-## Learning prerequisites
+## Technology direction
 
-- `kafka-messaging-platform-lab` (a suggested learning prerequisite; no runtime dependency is wired in)
+MCP · Kafka · Python · Tool contracts · AI-assisted investigation.
 
-Repositories are separate and can evolve independently. If you connect them later, exchange versioned fixtures or contracts; do not rely on sibling-relative imports. You can implement a standalone synthetic adapter first.
+These technologies describe the intended implementation. Dependencies and compatible versions will be pinned when introduced. Optional services are not required by the current source checks.
 
-## What makes this substantial
+## Working with the source
 
-- Local transport versus remote authenticated transport
-- Tool granularity and context limits
-- Authorization at tool boundary and backend identity
+```sh
+git clone https://github.com/abdelrahman-a-ibrahim/kafka-mcp-server.git
+cd kafka-mcp-server
+python3 tools/check_project.py
+```
 
-You must explain what happens on retries, partial failure, concurrent operations and recovery. Record what your test environment cannot prove. No result is accepted simply because a dashboard is green.
+Python 3.9+ is sufficient for the current standard-library source check. It parses Python and JSON and checks required project files. It does **not** run an application, validate deployment behavior or establish feature completion.
 
-## Definition of done
+The initial application boundary is in [`src/kafka_mcp_server/interfaces.py`](src/kafka_mcp_server/interfaces.py). [`examples/scenario.json`](examples/scenario.json) provides a synthetic development input. Installation and runtime commands will be added with the first executable release.
+
+## Quality and reliability
 
 - Read-only tools cannot mutate broker state.
 - Unauthorized topic details never appear in outputs or audit payloads.
 - Responses are bounded, paginated and attributable to a tool request.
 - A model failure cannot widen the adapter’s permissions.
 
-Also supply installation/reproduction instructions, dependency versions, meaningful behavior tests, cleanup instructions, an architecture decision log and evidence from a repeatable demonstration. A checklist or syntax check alone does not satisfy completion.
+These are acceptance targets. Failure scenarios are specified in [reliability verification](docs/reliability.md); [results](docs/verification/README.md) will be recorded as implementation progresses. Correctness and performance claims must reference an actual environment, workload and commit.
 
-## Advanced extensions
+## Development roadmap
 
-- Documented remote authorization flow
-- Schema/consumer metadata resource catalog
-- Prompt-injection evaluation suite
-- Explicitly approved sandbox-only mutation experiment
+- [ ] Contracts and system boundaries
+- [ ] Core implementation and behavior tests
+- [ ] External adapters and scoped access
+- [ ] Failure recovery and operational visibility
+- [ ] Reproducible deployment and release validation
 
-Extensions follow a working baseline; they are not requirements for the first milestone.
+See [delivery stages and future scope](docs/roadmap.md). For deployment prerequisites and resource lifecycle, see [operations](docs/operations.md).
 
-## Boundaries and costs
+## Repository structure
 
-Use fictional services, synthetic inputs and a disposable sandbox. Do not copy employer repositories, runbooks, tickets, customer data, credentials or internal architecture. Real cloud/provider adapters are future work and may incur costs; [the operations plan](docs/operations.md) must identify account, region, budget, resource inventory and teardown before deployment. Budget alerts notify; they do not constitute a hard spending cap.
+```text
+src/kafka_mcp_server/       Initial application interfaces
+examples/                  Synthetic development inputs
+tests/                     Behavior verification plan
+docs/architecture.md       Component design and boundaries
+docs/requirements.md       Functional and quality requirements
+docs/roadmap.md            Delivery stages and future scope
+docs/reliability.md        Failure and recovery scenarios
+docs/operations.md         Runtime and deployment plan
+docs/verification/         Results as implementation progresses
+tools/check_project.py     Source integrity check
+```
 
-## Publishable evidence, when earned
+## Development
 
-A completed lab may support a portfolio case study labeled **independent project**. Share your original code, sanitized diagrams, measured results and a failure/recovery write-up. Employer experience and personal lab evidence remain separate. Never copy illustrative fixture values into a results claim.
+Use focused feature branches, add behavior tests with implementation changes and update the relevant architecture decision when guarantees change. Read [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Primary references
+This is an independent personal project. Examples use synthetic data. See [NOTICE.md](NOTICE.md) for licensing status.
+
+## References
 
 - https://modelcontextprotocol.io/
 - https://github.com/modelcontextprotocol/modelcontextprotocol/security
 - https://kafka.apache.org/documentation/
-
-Read current official documentation when selecting SDKs, images, tool versions and integrations. The scaffold intentionally does not guess compatible version combinations.
-
-## Repository map
-
-- `src/kafka_mcp_operations_lab/interfaces.py`
-- `examples/scenario.json`
-- `docs/architecture.md`
-- `docs/milestones.md`
-- `docs/failure-lab.md`
-- `docs/acceptance.md`
-- `docs/learning-journal.md`
-- `docs/evidence/README.md`
-- `docs/operations.md` — local/cloud boundaries and teardown plan.
-- `docs/adr/` — decisions and alternatives.
-- `tools/check_foundation.py` — syntax and fixture integrity only.
-
-## Working agreement
-
-Keep commits focused: `docs`, `feat`, `test`, `fix`, `ops`. Work on a feature branch and merge only after the milestone review. Consult [CONTRIBUTING.md](CONTRIBUTING.md). No open-source license has been chosen yet; see [NOTICE.md](NOTICE.md).

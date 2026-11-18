@@ -1,5 +1,5 @@
 {
-  "principal": "lab-reader",
+  "principal": "development-reader",
   "tool": "describe_lag",
   "arguments": {
     "group_id": "workshop-projection"

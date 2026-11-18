@@ -1,28 +1,22 @@
 # ADR 0001: System boundaries and implementation approach
 
-Status: proposed / decision not yet made.
+Status: proposed.
 
 ## Context
-Expose synthetic Kafka metadata and consumer-lag summaries through an MCP server. Begin with read-only tools and a deterministic client. Add model integration only after validating permissions, bounded outputs and failure handling.
+An MCP server designed to give operational tools and AI clients bounded access to Kafka metadata. Its planned baseline provides topic discovery and consumer-lag context through authorization-aware adapters, structured responses and audit identifiers.
 
-## Decision questions
+## Questions
 - Local transport versus remote authenticated transport
 - Tool granularity and context limits
 - Authorization at tool boundary and backend identity
 
-## Options
-1. Small local implementation with synthetic adapters.
-2. Integrated lab with real dependencies in a disposable environment.
-3. A justified alternative to be supplied during design.
+## Alternatives
+- A local implementation with synthetic external adapters.
+- An integrated deployment with real dependencies in an isolated environment.
+- A smaller implementation that preserves the core invariant.
 
 ## Decision
-Pending. Start by evaluating the smallest approach that can demonstrate the core invariant.
+Pending. Record the selected option, rejected alternatives and rationale before implementing external adapters.
 
-## Consequences to assess
-Correctness, complexity, cost, recovery, trust boundaries, portability and maintenance burden.
-
-## Evidence needed
-A failure experiment, a working implementation slice and a comparison of the alternatives.
-
-## Revisit when
-Document a concrete load, team, correctness or operational constraint that invalidates the selected approach.
+## Consequences
+Assess correctness, operational complexity, cost, security boundaries, recovery and maintenance. Define the concrete constraint that would justify revisiting the decision.
